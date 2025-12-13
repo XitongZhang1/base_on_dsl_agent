@@ -1,0 +1,62 @@
+{
+  "test_id": "ecommerce_001",
+  "scenario": "ecommerce_scenario.dsl",
+  "description": "订单查询流程测试",
+  "prerequisites": {
+    "setup_actions": [
+      "设置用户订单数据",
+      "配置产品信息"
+    ],
+    "mock_apis": {
+      "get_orders_by_phone": {
+        "count": 2,
+        "orders": [
+          {
+            "order_id": "ORD20240115001",
+            "product_name": "智能手机",
+            "quantity": 1,
+            "total_amount": 2999.0,
+            "status": "已发货",
+            "order_time": "2024-01-10 14:30:00"
+          }
+        ]
+      }
+    }
+  },
+  "mapping": {
+    "start": {
+      "订单": "查询订单",
+      "物流": "物流查询",
+      "退货": "退货",
+      "商品": "商品咨询"
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "帮我查一下我的订单",
+      "intent": "查询订单",
+      "entities": {
+        "phone": "13800138000"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询订单信息...",
+      "expect_actions": ["CALL get_orders_by_phone(13800138000)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "找到2个订单.*订单号：ORD20240115001.*智能手机.*2999.0元",
+      "expect_actions": ["显示订单列表"],
+      "expect_variables": {
+        "order_count": 2
+      },
+      "expect_end": true
+    }
+  ]
+}

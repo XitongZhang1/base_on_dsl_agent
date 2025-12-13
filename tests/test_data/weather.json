@@ -1,0 +1,49 @@
+{
+  "test_id": "weather_001",
+  "scenario": "weather_scenario.dsl",
+  "description": "当前天气查询测试",
+  "prerequisites": {
+    "mock_apis": {
+      "get_current_weather": {
+        "success": true,
+        "condition": "晴",
+        "temperature": 22.5,
+        "feels_like": 23.0,
+        "humidity": 65,
+        "wind_speed": 12.3,
+        "wind_direction": "东南风",
+        "precipitation": 0.0,
+        "update_time": "2024-01-15 14:30:00"
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "上海现在的天气怎么样？",
+      "intent": "当前天气",
+      "entities": {
+        "city": "上海"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询上海的当前天气...",
+      "expect_actions": ["CALL get_current_weather(上海)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "【上海当前天气】.*天气状况：晴.*温度：22.5°C.*湿度：65%",
+      "expect_actions": ["显示天气信息"],
+      "expect_variables": {
+        "temperature": 22.5,
+        "condition": "晴"
+      },
+      "expect_end": true
+    }
+  ]
+}

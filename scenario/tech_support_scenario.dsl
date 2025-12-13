@@ -1,0 +1,6 @@
+response greeting: "您好，这里是技术支持。请描述您的问题（如: 无法开机、安装失败、网络问题）。"
+response hw_help: "若设备无法开机，请先检查电源连接、电源指示灯及长按电源键重启。"
+response install_help: "安装失败请提供软件名称和错误码，我们将为您提供常见安装建议。"
+response network_help: "网络问题请确认是 WiFi、有线还是移动网络，并尝试重启路由器。"
+response account_help: "登录问题请提供平台名与错误提示，我们将引导您进行账号验证与找回。"
+response guide_help: "需要使用指南请说明功能或软件名称，我们会提供相应步骤与建议。"

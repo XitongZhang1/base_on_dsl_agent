@@ -1,0 +1,6 @@
+response greeting: "欢迎使用天气查询服务。请输入城市名以获取天气相关信息。"
+response current_weather_help: "查询当前天气请提供城市和省份，我们将返回天气概况与温度信息。"
+response forecast_help: "查询天气预报请提供城市名称和天数（最多7天）。"
+response aqi_help: "查询空气质量请提供城市名称，我们会返回 AQI 与健康建议。"
+response warning_help: "天气预警请提供城市或省份，我们将查询是否有有效预警。"
+response indices_help: "生活指数查询请提供城市与需要的指数类型（例如穿衣/出行）。"

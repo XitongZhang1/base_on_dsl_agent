@@ -1,0 +1,61 @@
+{
+  "test_id": "banking_001",
+  "scenario": "banking_scenario.dsl",
+  "description": "完整的余额查询流程测试",
+  "prerequisites": {
+    "setup_actions": [
+      "初始化用户账户数据",
+      "设置账户余额为10000元"
+    ],
+    "mock_apis": {
+      "get_balance": {
+        "success": true,
+        "data": {
+          "amount": 10000,
+          "currency": "CNY",
+          "last_updated": "2024-01-15 10:30:00"
+        }
+      }
+    }
+  },
+  "mapping": {
+    "start": {
+      "余额": "查询余额",
+      "转账": "转账",
+      "账单": "查询账单",
+      "贷款": "申请贷款",
+      "密码": "修改密码"
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "你好，我想查询一下我的账户余额",
+      "intent": "查询余额",
+      "entities": {},
+      "expect_state": "processing",
+      "expect_reply": "正在为您查询账户余额...",
+      "expect_actions": ["CALL get_balance()"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "您的账户余额为：10000 CNY",
+      "expect_actions": ["SAY 余额信息"],
+      "expect_variables": {
+        "balance": 10000,
+        "currency": "CNY"
+      },
+      "expect_end": true
+    }
+  ],
+  "postconditions": {
+    "cleanup": ["重置账户状态"],
+    "assertions": ["余额查询成功", "回复信息正确"]
+  }
+}

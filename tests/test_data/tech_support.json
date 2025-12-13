@@ -1,0 +1,42 @@
+{
+  "test_id": "tech_001",
+  "scenario": "tech_support_scenario.dsl",
+  "description": "电脑无法开机故障诊断测试",
+  "prerequisites": {
+    "mock_apis": {
+      "diagnose_hardware_issue": {
+        "common_issues": [
+          {"problem": "电源故障", "solution": "检查电源线和插座"},
+          {"problem": "内存条松动", "solution": "重新插拔内存条"}
+        ],
+        "severity": 60
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "我的笔记本电脑无法开机了",
+      "intent": "电脑故障",
+      "entities": {
+        "device_type": "笔记本电脑"
+      },
+      "expect_state": "diagnosing",
+      "expect_reply": "正在为您诊断笔记本电脑问题...",
+      "expect_actions": ["CALL diagnose_hardware_issue(笔记本电脑)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "advising",
+      "expect_reply": "请按以下步骤操作：.*检查电源连接是否正常.*常见问题及解决方案：.*电源故障.*内存条松动",
+      "expect_actions": ["显示诊断结果"],
+      "expect_variables": {},
+      "expect_end": true
+    }
+  ]
+}
