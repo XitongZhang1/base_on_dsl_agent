@@ -47,3 +47,235 @@
     }
   ]
 }
+
+{
+  "test_id": "weather_002",
+  "scenario": "weather_scenario.dsl",
+  "description": "三天天气预报测试",
+  "prerequisites": {
+    "mock_apis": {
+      "get_weather_forecast": {
+        "success": true,
+        "forecasts": [
+          {
+            "date": "2024-01-16",
+            "weekday": "星期二",
+            "day": {"condition": "多云", "temperature": 20},
+            "night": {"condition": "小雨", "temperature": 15},
+            "precipitation_probability": 30,
+            "wind_speed": 10.5
+          },
+          {
+            "date": "2024-01-17",
+            "weekday": "星期三",
+            "day": {"condition": "小雨", "temperature": 18},
+            "night": {"condition": "阴", "temperature": 14},
+            "precipitation_probability": 70,
+            "wind_speed": 8.2
+          }
+        ]
+      },
+      "analyze_weather_trend": {
+        "trend_analysis": {
+          "summary": "未来几天有小雨，气温逐渐下降",
+          "warnings": ["记得带伞", "注意保暖"]
+        }
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "北京未来三天的天气",
+      "intent": "天气预报",
+      "entities": {
+        "city": "北京",
+        "days": 3
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询北京未来3天的天气预报...",
+      "expect_actions": ["CALL get_weather_forecast(北京, 3)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "analyzing",
+      "expect_reply": "【北京未来3天天气预报】.*2024-01-16.*白天：多云，20°C.*降水概率：30%",
+      "expect_actions": ["CALL analyze_weather_trend()"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 3,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "天气趋势分析：.*未来几天有小雨，气温逐渐下降.*注意事项：.*记得带伞",
+      "expect_actions": ["显示趋势分析"],
+      "expect_variables": {},
+      "expect_end": true
+    }
+  ]
+}
+
+{
+  "test_id": "weather_003",
+  "scenario": "weather_scenario.dsl",
+  "description": "空气质量查询测试",
+  "prerequisites": {
+    "mock_apis": {
+      "get_air_quality": {
+        "success": true,
+        "aqi": 85,
+        "level": "良",
+        "primary_pollutant": "PM2.5",
+        "pm25": 65,
+        "pm10": 92,
+        "update_time": "2024-01-15 15:00:00"
+      },
+      "get_health_advice": {
+        "advices": [
+          "空气质量可接受",
+          "极少数敏感人群应减少户外活动"
+        ],
+        "sensitive_group_warnings": [
+          "儿童、老年人应减少长时间户外活动"
+        ]
+      },
+      "get_aqi_history": {
+        "trend": "improving"
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "广州的空气质量如何？",
+      "intent": "空气质量",
+      "entities": {
+        "city": "广州"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询广州的空气质量...",
+      "expect_actions": ["CALL get_air_quality(广州)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "evaluating",
+      "expect_reply": "【广州空气质量】.*AQI指数：85.*主要污染物：PM2.5.*PM2.5：65 μg/m³",
+      "expect_actions": ["CALL get_health_advice(85)", "CALL get_aqi_history(广州)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 3,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "健康建议：.*空气质量可接受.*空气质量正在好转。",
+      "expect_actions": ["显示健康建议"],
+      "expect_variables": {
+        "aqi": 85,
+        "level": "良"
+      },
+      "expect_end": true
+    }
+  ]
+}
+
+{
+  "test_id": "weather_004",
+  "scenario": "weather_scenario.dsl",
+  "description": "多城市天气对比测试",
+  "prerequisites": {
+    "mock_apis": {
+      "compare_weather": {
+        "comparison": [
+          {
+            "city": "北京",
+            "temperature": 15.5,
+            "condition": "晴",
+            "humidity": 45,
+            "aqi": 120
+          },
+          {
+            "city": "上海",
+            "temperature": 22.5,
+            "condition": "多云",
+            "humidity": 65,
+            "aqi": 85
+          },
+          {
+            "city": "广州",
+            "temperature": 25.0,
+            "condition": "小雨",
+            "humidity": 80,
+            "aqi": 95
+          }
+        ]
+      },
+      "analyze_comparison_results": {
+        "analysis": {
+          "best_city": "上海",
+          "reason": "温度适宜，空气质量良好",
+          "not_recommended_cities": [
+            {"city": "北京", "reason": "空气质量较差"},
+            {"city": "广州", "reason": "湿度过高，有雨"}
+          ]
+        }
+      },
+      "format_comparison_row": {
+        "formatted_row": "北京        | 15.5 | 晴   | 45%  | 120"
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "比较一下北京、上海、广州的天气",
+      "intent": "天气对比",
+      "entities": {
+        "cities": ["北京", "上海", "广州"],
+        "cities_count": 3
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在对比北京、上海、广州的天气情况...",
+      "expect_actions": ["CALL compare_weather(北京,上海,广州)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "analyzing",
+      "expect_reply": "【多城市天气对比】.*城市.*|.*温度.*|.*天气.*|.*湿度.*|.*AQI.*北京.*15.5.*晴.*45%.*120",
+      "expect_actions": ["CALL analyze_comparison_results()"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 3,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "分析结果：.*最适合出行的城市：上海.*不推荐城市：.*北京：空气质量较差",
+      "expect_actions": ["显示分析结果"],
+      "expect_variables": {},
+      "expect_end": true
+    }
+  ]
+}

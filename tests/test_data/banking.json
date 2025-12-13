@@ -59,3 +59,174 @@
     "assertions": ["余额查询成功", "回复信息正确"]
   }
 }
+
+{
+  "test_id": "banking_002",
+  "scenario": "banking_scenario.dsl",
+  "description": "转账流程测试 - 成功转账",
+  "prerequisites": {
+    "setup_actions": [
+      "设置用户账户余额为5000元",
+      "设置收款人账户信息",
+      "设置安全验证通过"
+    ],
+    "mock_apis": {
+      "verify_transfer": {
+        "safe_level": 85,
+        "risk_message": "正常交易"
+      },
+      "execute_transfer": {
+        "success": true,
+        "transaction_id": "TXN20240115001",
+        "fee": 5.0,
+        "message": "转账成功"
+      }
+    }
+  },
+  "mapping": {
+    "start": {
+      "转账": "转账"
+    },
+    "confirm": {
+      "确认": "确认转账",
+      "取消": "取消转账"
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "我要转账1000元给张三，账号是622848001234567890",
+      "intent": "转账",
+      "entities": {
+        "amount": 1000,
+        "receiver_account": "622848001234567890",
+        "receiver_name": "张三"
+      },
+      "expect_state": "confirming",
+      "expect_reply": "请确认转账信息：",
+      "expect_actions": ["CALL verify_transfer()"],
+      "expect_variables": {
+        "amount": 1000,
+        "receiver_account": "622848001234567890"
+      },
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "确认转账",
+      "intent": "确认转账",
+      "entities": {},
+      "expect_state": "processing",
+      "expect_reply": "安全验证通过，正在处理转账...",
+      "expect_actions": ["CALL execute_transfer()"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 3,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "转账成功！.*交易号：TXN20240115001",
+      "expect_actions": ["SAY 转账成功信息"],
+      "expect_variables": {
+        "transaction_id": "TXN20240115001",
+        "fee": 5.0
+      },
+      "expect_end": true
+    }
+  ],
+  "postconditions": {
+    "cleanup": ["重置转账记录"],
+    "assertions": ["转账成功", "交易号正确生成", "手续费计算正确"]
+  }
+}
+
+{
+  "test_id": "banking_003",
+  "scenario": "banking_scenario.dsl",
+  "description": "高风险转账被阻止测试",
+  "prerequisites": {
+    "setup_actions": [
+      "设置用户账户余额为1000元",
+      "设置高风险收款账户"
+    ],
+    "mock_apis": {
+      "verify_transfer": {
+        "safe_level": 65,
+        "risk_message": "高风险账户"
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "转账50000元到622848009876543210",
+      "intent": "转账",
+      "entities": {
+        "amount": 50000,
+        "receiver_account": "622848009876543210"
+      },
+      "expect_state": "warning",
+      "expect_reply": "转账风险较高，建议您前往柜台办理或联系客服确认。",
+      "expect_actions": ["CALL verify_transfer()"],
+      "expect_variables": {},
+      "expect_end": true
+    }
+  ],
+  "postconditions": {
+    "cleanup": ["清除风险评估"],
+    "assertions": ["高风险转账被阻止", "显示适当警告信息"]
+  }
+}
+
+{
+  "test_id": "banking_004",
+  "scenario": "banking_scenario.dsl",
+  "description": "本月账单查询测试",
+  "prerequisites": {
+    "setup_actions": [
+      "设置本月交易记录"
+    ],
+    "mock_apis": {
+      "get_transactions": {
+        "count": 8,
+        "transactions": [
+          {"date": "2024-01-10", "description": "工资收入", "amount": 15000, "type": "收入"},
+          {"date": "2024-01-12", "description": "超市购物", "amount": 356.8, "type": "支出"},
+          {"date": "2024-01-13", "description": "水电费", "amount": 280.5, "type": "支出"}
+        ]
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "我想查看本月的账单",
+      "intent": "查询账单",
+      "entities": {
+        "time_range": "本月"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询本月的交易记录...",
+      "expect_actions": ["CALL get_transactions(本月)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "共找到8笔交易.*总收入：15000元.*总支出：637.3元",
+      "expect_actions": ["计算总收入支出", "显示最近交易"],
+      "expect_variables": {
+        "total_income": 15000,
+        "total_expense": 637.3
+      },
+      "expect_end": true
+    }
+  ]
+}

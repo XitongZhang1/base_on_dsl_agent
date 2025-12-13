@@ -40,3 +40,114 @@
     }
   ]
 }
+
+{
+  "test_id": "tech_002",
+  "scenario": "tech_support_scenario.dsl",
+  "description": "软件安装失败问题解决测试",
+  "prerequisites": {
+    "mock_apis": {
+      "get_installation_guide": {
+        "has_solution": true,
+        "solution_steps": [
+          {"step_number": 1, "description": "关闭所有安全软件", "note": "包括Windows Defender"},
+          {"step_number": 2, "description": "以管理员身份运行安装程序", "command": "右键点击 -> 以管理员身份运行"}
+        ],
+        "download_links": [
+          {"description": "官方下载地址", "url": "https://example.com/download"}
+        ]
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "安装Photoshop失败了，错误代码0x80070005",
+      "intent": "安装失败",
+      "entities": {
+        "software_name": "Photoshop",
+        "error_code": "0x80070005"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在获取安装解决方案...",
+      "expect_actions": ["CALL get_installation_guide(Photoshop, 0x80070005)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "针对Photoshop的安装问题，解决方案如下：.*步骤1: 关闭所有安全软件.*官方下载地址：https://example.com/download",
+      "expect_actions": ["显示解决方案"],
+      "expect_variables": {},
+      "expect_end": true
+    }
+  ]
+}
+
+{
+  "test_id": "tech_003",
+  "scenario": "tech_support_scenario.dsl",
+  "description": "网络连接问题诊断测试",
+  "prerequisites": {
+    "mock_apis": {
+      "diagnose_network_issue": {
+        "detected_issues": [
+          {"description": "DNS服务器无响应", "severity": 75, "solution": "更换DNS服务器为8.8.8.8"}
+        ],
+        "test_tools": [
+          {"name": "网络诊断工具", "description": "一键诊断网络问题", "download_url": "https://example.com/tool"}
+        ]
+      },
+      "test_network_speed": {
+        "speed_test": {
+          "download": 5.2,
+          "upload": 1.8,
+          "ping": 120
+        }
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "家里的WiFi很慢，怎么办？",
+      "intent": "网络问题",
+      "entities": {
+        "network_type": "WiFi"
+      },
+      "expect_state": "diagnosing",
+      "expect_reply": "正在诊断WiFi网络问题...",
+      "expect_actions": ["CALL diagnose_network_issue(WiFi)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "testing",
+      "expect_reply": "检测到以下问题：.*DNS服务器无响应.*推荐使用以下工具进行测试：.*网络诊断工具",
+      "expect_actions": ["CALL test_network_speed()"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 3,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "当前网络速度：.*下载：5.2 Mbps.*网络速度较慢，建议联系网络服务提供商。",
+      "expect_actions": ["显示网络速度"],
+      "expect_variables": {
+        "download_speed": 5.2
+      },
+      "expect_end": true
+    }
+  ]
+}

@@ -60,3 +60,172 @@
     }
   ]
 }
+
+{
+  "test_id": "ecommerce_002",
+  "scenario": "ecommerce_scenario.dsl",
+  "description": "物流查询测试",
+  "prerequisites": {
+    "mock_apis": {
+      "get_logistics_info": {
+        "success": true,
+        "logistics_company": "顺丰速运",
+        "tracking_number": "SF1234567890",
+        "current_status": "已签收",
+        "estimated_delivery": "2024-01-15",
+        "tracking_history": [
+          {"time": "2024-01-12 09:00", "location": "北京分拨中心", "description": "已发出"},
+          {"time": "2024-01-14 15:30", "location": "上海分拨中心", "description": "派送中"},
+          {"time": "2024-01-15 10:20", "location": "上海浦东", "description": "已签收"}
+        ]
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "我的快递到哪里了？运单号SF1234567890",
+      "intent": "物流查询",
+      "entities": {
+        "tracking_number": "SF1234567890"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询物流信息...",
+      "expect_actions": ["CALL get_logistics_info(SF1234567890)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "物流公司：顺丰速运.*当前状态：已签收.*2024-01-12.*北京分拨中心",
+      "expect_actions": ["显示物流轨迹"],
+      "expect_variables": {
+        "logistics_company": "顺丰速运"
+      },
+      "expect_end": true
+    }
+  ]
+}
+
+{
+  "test_id": "ecommerce_003",
+  "scenario": "ecommerce_scenario.dsl",
+  "description": "成功退货申请测试",
+  "prerequisites": {
+    "mock_apis": {
+      "check_return_eligibility": {
+        "eligible": true,
+        "freight_payer": "卖家"
+      },
+      "create_return_request": {
+        "success": true,
+        "return_id": "RTN20240115001",
+        "return_address": "上海市浦东新区XX路XX号",
+        "service_phone": "400-123-4567"
+      }
+    }
+  },
+  "mapping": {
+    "confirm": {
+      "是的": "确认退货",
+      "不了": "取消退货"
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "我想退货，订单号ORD20240115001，商品有瑕疵",
+      "intent": "退货",
+      "entities": {
+        "order_id": "ORD20240115001",
+        "reason": "商品有瑕疵"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在为您处理退货申请...",
+      "expect_actions": ["CALL check_return_eligibility(ORD20240115001)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "confirming",
+      "expect_reply": "您的订单符合退货条件.*退货期限：收到商品7天内.*运费由卖家承担",
+      "expect_actions": ["CALL create_return_request()"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 3,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "退货申请已提交！.*退货单号：RTN20240115001.*退货地址：上海市浦东新区",
+      "expect_actions": ["显示退货信息"],
+      "expect_variables": {
+        "return_id": "RTN20240115001"
+      },
+      "expect_end": true
+    }
+  ]
+}
+
+{
+  "test_id": "ecommerce_004",
+  "scenario": "ecommerce_scenario.dsl",
+  "description": "商品咨询测试",
+  "prerequisites": {
+    "mock_apis": {
+      "get_product_info": {
+        "found": true,
+        "name": "iPhone 15 Pro",
+        "price": 8999.0,
+        "stock": 25,
+        "specifications": [
+          {"key": "屏幕尺寸", "value": "6.7英寸"},
+          {"key": "处理器", "value": "A17 Pro"},
+          {"key": "内存", "value": "8GB"}
+        ],
+        "promotions": [
+          {"title": "新年优惠", "description": "立减500元"}
+        ]
+      }
+    }
+  },
+  "steps": [
+    {
+      "step_id": 1,
+      "user": "iPhone 15 Pro的参数是什么？",
+      "intent": "商品咨询",
+      "entities": {
+        "product_name": "iPhone 15 Pro"
+      },
+      "expect_state": "processing",
+      "expect_reply": "正在查询商品信息...",
+      "expect_actions": ["CALL get_product_info(iPhone 15 Pro)"],
+      "expect_variables": {},
+      "expect_end": false
+    },
+    {
+      "step_id": 2,
+      "user": "",
+      "intent": "api_response",
+      "entities": {},
+      "expect_state": "completed",
+      "expect_reply": "商品信息：.*名称：iPhone 15 Pro.*价格：8999.0元.*屏幕尺寸：6.7英寸.*新年优惠：立减500元",
+      "expect_actions": ["显示商品规格"],
+      "expect_variables": {
+        "product_name": "iPhone 15 Pro",
+        "price": 8999.0
+      },
+      "expect_end": true
+    }
+  ]
+}

@@ -1,6 +1,2 @@
-response greeting: "欢迎使用银行客服。请选择服务：查询余额、转账、账单查询、贷款咨询或密码重置。"
-response balance_help: "查询余额请提供注册手机号或账号，我们将为您查询账户余额。"
-response transfer_help: "转账请确认收款人信息与转账金额，金额必须大于0。"
-response transactions_help: "查询交易记录请输入时间范围，例如: 本月、最近一周。"
-response loan_help: "贷款咨询请提供贷款金额和期限（单位：月）。"
-response password_help: "忘记密码请使用重置功能，我们会向注册邮箱发送重置链接。"
+response start.查询余额->processing: "正在为您查询账户余额..."
+response processing.api_response->completed: "您的账户余额为：10000 CNY"

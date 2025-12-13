@@ -11,8 +11,13 @@ DATA_DIR = pathlib.Path(__file__).parent / "test_data"
 
 
 def load_case(name: str) -> Dict[str, Any]:
-    with open(DATA_DIR / name, "r", encoding="utf-8") as f:
-        return json.load(f)
+    # Accept files that may contain multiple concatenated JSON objects
+    text = (DATA_DIR / name).read_text(encoding="utf-8").strip()
+    if not text:
+        return {}
+    decoder = json.JSONDecoder()
+    obj, _ = decoder.raw_decode(text)
+    return obj
 
 
 def run_case(case: Dict[str, Any]) -> None:
