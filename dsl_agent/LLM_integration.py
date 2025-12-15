@@ -165,3 +165,45 @@ class LLMIntentService:
         if first in intents:
             return first
         return None
+
+    def _call_llm_generate(self, prompt: str, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> Optional[str]:
+        """Call the underlying LLM client to generate a text completion.
+
+        This method uses a more permissive system role suitable for general
+        completions (not intent classification)."""
+        last_exc: Optional[Exception] = None
+        for attempt in range(self.max_retries):
+            try:
+                completion = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are a helpful assistant. Respond concisely and only with the requested output."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    max_tokens=(max_tokens or self.max_tokens),
+                    temperature=(temperature if temperature is not None else self.temperature),
+                    timeout=self.timeout,
+                )
+                try:
+                    return completion.choices[0].message.content
+                except Exception:
+                    try:
+                        return completion.choices[0].text
+                    except Exception:
+                        return str(completion)
+            except Exception as exc:  # pragma: no cover - network errors vary
+                last_exc = exc
+                logger.warning("LLM generate call failed (attempt %s): %s", attempt + 1, exc)
+                time.sleep(0.5 * (2 ** attempt))
+        if last_exc:
+            logger.error("LLM generate call failed after retries: %s", last_exc)
+        return None
+
+    async def generate(self, prompt: str, max_tokens: Optional[int] = None, temperature: Optional[float] = None) -> Optional[str]:
+        sanitized = prompt.strip()[:2000]
+        return await asyncio.to_thread(self._call_llm_generate, sanitized, max_tokens, temperature)

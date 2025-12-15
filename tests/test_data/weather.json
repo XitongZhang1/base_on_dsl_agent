@@ -47,7 +47,6 @@
     }
   ]
 }
-
 {
   "test_id": "weather_002",
   "scenario": "weather_scenario.dsl",

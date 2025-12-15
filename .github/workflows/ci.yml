@@ -1,0 +1,37 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run tests (stub)
+        run: python -m pytest -q
+
+  e2e-llm:
+    needs: test
+    if: ${{ secrets.DSL_API_KEY != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run E2E LLM tests
+        env:
+          DSL_RUN_REAL_LLM: 'true'
+          DSL_API_BASE: ${{ secrets.DSL_API_BASE }}
+          DSL_API_KEY: ${{ secrets.DSL_API_KEY }}
+          DSL_MODEL: ${{ secrets.DSL_MODEL }}
+        run: python -m pytest tests/test_e2e_llm.py -q

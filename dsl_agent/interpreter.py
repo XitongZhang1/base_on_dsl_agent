@@ -6,6 +6,7 @@ import logging
 from typing import List, Optional, Any
 
 from .LLM_integration import IntentService
+from .ast_nodes import ASTNode
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,30 @@ class Interpreter:
             transition = state.default
             matched = "default"
 
-        reply = transition.response.replace("{user_input}", user_text)
+        # Prepare runtime context for AST execution
+        context = {
+            "intent_service": self.intent_service,
+            "llm_client": self.intent_service,
+            "state_name": state.name,
+            "state_intents": available_intents,
+            "user_input": user_text,
+            "variables": {},
+            "functions": {},
+            # response_callback can be used by ResponseNode to report breadcrumbs
+            "response_callback": None,
+        }
+
+        # If the transition response is an ASTNode, execute it with the async API.
+        if isinstance(transition.response, ASTNode):
+            try:
+                reply_val = await transition.response.execute_async(context)
+                reply = str(reply_val)
+            except Exception:
+                # fallback to empty reply on execution error
+                reply = ""
+        else:
+            # Plain string -> use legacy behavior
+            reply = transition.response.replace("{user_input}", user_text)
 
         if transition.next_state is None:
             self._ended = True

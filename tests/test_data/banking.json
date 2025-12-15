@@ -163,7 +163,7 @@
     {
       "step_id": 1,
       "user": "转账50000元到622848009876543210",
-      "intent": "转账",
+      "intent": "转账高风险",
       "entities": {
         "amount": 50000,
         "receiver_account": "622848009876543210"

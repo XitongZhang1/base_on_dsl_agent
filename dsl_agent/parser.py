@@ -179,7 +179,8 @@ class DSLParser:
 
 # Lightweight scenario model for compatibility with Interpreter and CLI
 class Transition:
-    def __init__(self, response: str, next_state: Optional[str] = None):
+    def __init__(self, response, next_state: Optional[str] = None):
+        # response may be a plain string or an ASTNode (to be executed at runtime)
         self.response = response
         self.next_state = next_state
 
@@ -231,13 +232,17 @@ def parse_script(path) -> Scenario:
         if ResponseNode and isinstance(node, ResponseNode):
             resp_type = getattr(node, 'response_type', 'default')
             content_node = getattr(node, 'content', None)
-            if StringNode and isinstance(content_node, StringNode):
-                txt = content_node.value
+            # Keep the AST node (do not eagerly execute at parse time) so the
+            # interpreter can evaluate it with a runtime context (e.g. llm client).
+            if content_node is None:
+                txt = StringNode("")
             else:
-                try:
-                    txt = content_node.execute({}) if content_node is not None else ''
-                except Exception:
-                    txt = str(content_node)
+                # Keep literal string values as plain strings for backward
+                # compatibility with tests and simple templating replacement.
+                if StringNode and isinstance(content_node, StringNode):
+                    txt = content_node.value
+                else:
+                    txt = content_node
 
             # support optional next state: state.intent->nextstate
             next_state = None

@@ -1,0 +1,121 @@
+2025-12-14 13:01:10,217 INFO root: Forced use of real LLM intent service model=gpt-4o-mini api_base=https://api.openai.com/v1
+2025-12-14 13:01:48,701 INFO openai._base_client: Retrying request to /chat/completions in 0.430300 seconds
+2025-12-14 13:02:19,155 INFO openai._base_client: Retrying request to /chat/completions in 0.768482 seconds
+2025-12-14 13:02:49,939 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Request timed out.
+2025-12-14 13:02:50,440 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Request timed out.
+2025-12-14 13:02:50,440 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 13:03:20,458 INFO openai._base_client: Retrying request to /chat/completions in 0.461650 seconds
+2025-12-14 13:03:50,941 INFO openai._base_client: Retrying request to /chat/completions in 0.997886 seconds
+2025-12-14 13:04:21,956 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Request timed out.
+2025-12-14 13:04:22,457 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Request timed out.
+2025-12-14 13:04:22,457 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 13:04:52,478 INFO openai._base_client: Retrying request to /chat/completions in 0.378026 seconds
+2025-12-14 13:05:22,872 INFO openai._base_client: Retrying request to /chat/completions in 0.841490 seconds
+2025-12-14 13:05:53,737 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Request timed out.
+2025-12-14 13:05:54,237 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Request timed out.
+2025-12-14 13:35:09,729 INFO root: Forced use of real LLM intent service model=gpt-4o-mini api_base=https://api.openai.com/v1
+2025-12-14 13:35:10,782 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 'ascii' codec can't encode characters in position 11-14: ordinal not in range(128)
+2025-12-14 13:35:11,283 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 'ascii' codec can't encode characters in position 11-14: ordinal not in range(128)
+2025-12-14 13:35:11,284 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 13:35:11,285 INFO root: current_state=booking ended=False
+2025-12-14 13:35:11,286 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 'ascii' codec can't encode characters in position 11-14: ordinal not in range(128)
+2025-12-14 13:35:11,787 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 'ascii' codec can't encode characters in position 11-14: ordinal not in range(128)
+2025-12-14 13:35:11,787 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 13:35:11,788 INFO root: current_state=confirm ended=False
+2025-12-14 13:42:28,502 INFO root: Forced use of real LLM intent service model=gpt-4o-mini api_base=https://api.openai.com/v1
+2025-12-14 13:42:30,646 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:30,657 INFO openai._base_client: Retrying request to /chat/completions in 0.444438 seconds
+2025-12-14 13:42:31,930 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:31,930 INFO openai._base_client: Retrying request to /chat/completions in 0.961422 seconds
+2025-12-14 13:42:33,535 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:33,547 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:34,048 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:34,048 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 13:42:34,049 INFO root: current_state=booking ended=False
+2025-12-14 13:42:37,939 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:37,939 INFO openai._base_client: Retrying request to /chat/completions in 0.484361 seconds
+2025-12-14 13:42:39,124 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:39,124 INFO openai._base_client: Retrying request to /chat/completions in 0.805727 seconds
+2025-12-14 13:42:40,259 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:40,260 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:40,761 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:40,761 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 13:42:40,762 INFO root: current_state=confirm ended=False
+2025-12-14 13:42:49,853 INFO root: Forced use of real LLM intent service model=gpt-4o-mini api_base=https://api.openai.com/v1
+2025-12-14 13:42:51,339 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:51,339 INFO openai._base_client: Retrying request to /chat/completions in 0.436356 seconds
+2025-12-14 13:42:54,773 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:54,773 INFO openai._base_client: Retrying request to /chat/completions in 0.772986 seconds
+2025-12-14 13:42:55,830 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:55,831 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:56,332 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:56,333 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 13:42:56,334 INFO root: current_state=booking ended=False
+2025-12-14 13:42:56,625 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:56,625 INFO openai._base_client: Retrying request to /chat/completions in 0.441143 seconds
+2025-12-14 13:42:57,367 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:57,367 INFO openai._base_client: Retrying request to /chat/completions in 0.767143 seconds
+2025-12-14 13:42:58,951 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:42:58,951 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:59,452 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:42:59,452 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 13:42:59,453 INFO root: current_state=confirm ended=False
+2025-12-14 13:43:07,480 INFO root: Forced use of real LLM intent service model=gpt-4o-mini api_base=https://api.openai.com/v1
+2025-12-14 13:43:09,000 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:43:09,000 INFO openai._base_client: Retrying request to /chat/completions in 0.401300 seconds
+2025-12-14 13:43:09,722 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:43:09,723 INFO openai._base_client: Retrying request to /chat/completions in 0.954733 seconds
+2025-12-14 13:43:11,011 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:43:11,013 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:43:11,513 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:43:11,514 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 13:43:11,515 INFO root: current_state=booking ended=False
+2025-12-14 13:43:11,842 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:43:11,842 INFO openai._base_client: Retrying request to /chat/completions in 0.481463 seconds
+2025-12-14 13:43:12,639 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:43:12,639 INFO openai._base_client: Retrying request to /chat/completions in 0.766955 seconds
+2025-12-14 13:43:13,732 INFO httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2025-12-14 13:43:13,732 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:43:14,233 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+2025-12-14 13:43:14,234 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 13:43:14,235 INFO root: current_state=confirm ended=False
+2025-12-14 14:43:45,431 INFO root: Forced use of real LLM intent service model=qwen-flash api_base=https://api.aliyun.example
+2025-12-14 14:43:52,214 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7BF9F5F0>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 14:43:52,715 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7BF9F5F0>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 14:43:52,715 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 14:44:20,069 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7D528F80>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 14:44:20,569 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7D528F80>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 14:44:20,569 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 15:01:25,299 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7D529070>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 15:01:25,801 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7D529070>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 15:01:25,807 WARNING dsl_agent.LLM_integration: LLM generate call failed (attempt 1): HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7D5298E0>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 15:01:26,308 ERROR dsl_agent.LLM_integration: LLM generate call failed after retries: HTTPSConnectionPool(host='api.aliyun.example', port=443): Max retries exceeded with url: /v1/chat/completions (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x0000021E7D5298E0>: Failed to resolve 'api.aliyun.example' ([Errno 11001] getaddrinfo failed)"))
+2025-12-14 15:01:26,309 INFO dsl_agent.interpreter: state=confirm intent=default next=end ended=True
+2025-12-14 15:04:36,964 INFO root: Forced use of real LLM intent service model=qwen-flash api_base=https://dashscope.aliyuncs.com/compatible-mode/v1
+2025-12-14 15:04:41,589 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:04:42,090 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:04:42,090 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 15:11:24,790 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:11:25,291 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:11:25,291 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 15:11:29,550 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:11:30,051 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:11:30,388 WARNING dsl_agent.LLM_integration: LLM generate call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:11:30,889 ERROR dsl_agent.LLM_integration: LLM generate call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:11:30,889 INFO dsl_agent.interpreter: state=confirm intent=default next=end ended=True
+2025-12-14 15:12:10,513 INFO root: Forced use of real LLM intent service model=qwen-flash api_base=https://dashscope.aliyuncs.com/compatible-mode/v1
+2025-12-14 15:12:18,860 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:19,362 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:19,362 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 15:12:32,976 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:33,478 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:33,478 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 15:12:33,821 WARNING dsl_agent.LLM_integration: LLM intent call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:34,322 ERROR dsl_agent.LLM_integration: LLM intent call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:34,671 WARNING dsl_agent.LLM_integration: LLM generate call failed (attempt 1): 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:35,172 ERROR dsl_agent.LLM_integration: LLM generate call failed after retries: 404 Client Error: Not Found for url: https://dashscope.aliyuncs.com/compatible-mode/v1/v1/chat/completions
+2025-12-14 15:12:35,172 INFO dsl_agent.interpreter: state=confirm intent=default next=end ended=True
+2025-12-14 15:13:28,772 INFO root: Forced use of real LLM intent service model=qwen-flash api_base=https://dashscope.aliyuncs.com/compatible-mode
+2025-12-14 15:13:33,130 INFO dsl_agent.interpreter: state=start intent=default next=booking ended=False
+2025-12-14 15:13:49,591 INFO dsl_agent.interpreter: state=booking intent=default next=confirm ended=False
+2025-12-14 15:14:48,895 INFO dsl_agent.interpreter: state=confirm intent=default next=end ended=True

@@ -3,3 +3,6 @@
 2025-12-14 00:13:58,457 INFO dsl_agent.interpreter: state=processing intent=default next=completed ended=True
 2025-12-14 00:18:25,554 INFO root: Using stub intent service (use_stub=True)
 2025-12-14 00:19:18,228 INFO dsl_agent.interpreter: state=banking_scenario intent=default next=end ended=True
+2025-12-14 01:11:13,969 INFO root: Using stub intent service (use_stub=True)
+2025-12-14 01:11:27,262 INFO dsl_agent.interpreter: state=start intent=default next=processing_balance ended=False
+2025-12-14 01:11:28,962 INFO dsl_agent.interpreter: state=processing_balance intent=default next=completed_balance ended=True

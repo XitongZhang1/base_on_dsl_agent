@@ -68,6 +68,9 @@ def _resolve_settings(args: argparse.Namespace, cfg: Dict[str, Any]) -> Dict[str
         "welcome_messages": cfg.get("welcome_messages", {}),
         "log_file": cfg.get("log_file"),
         "idle_timeout": cfg.get("idle_timeout"),
+        "use_real_llm": cfg.get("use_real_llm"),
+        "provider": cfg.get("provider"),
+        "api_secret": cfg.get("api_secret"),
     }
 
     if args.api_base:
@@ -80,6 +83,10 @@ def _resolve_settings(args: argparse.Namespace, cfg: Dict[str, Any]) -> Dict[str
         settings["use_stub"] = args.use_stub
     if args.show_intent is not None:
         settings["show_intent"] = args.show_intent
+    if args.use_real_llm is not None:
+        settings["use_real_llm"] = args.use_real_llm
+    if getattr(args, 'provider', None):
+        settings["provider"] = args.provider
     if args.log_file:
         settings["log_file"] = args.log_file
     if args.idle_timeout is not None:
@@ -88,6 +95,7 @@ def _resolve_settings(args: argparse.Namespace, cfg: Dict[str, Any]) -> Dict[str
     # environment overrides everything
     settings["api_base"] = os.getenv("DSL_API_BASE", settings.get("api_base"))
     settings["api_key"] = os.getenv("DSL_API_KEY", settings.get("api_key"))
+    settings["api_secret"] = os.getenv("DSL_API_SECRET", settings.get("api_secret"))
     settings["model"] = os.getenv("DSL_MODEL", settings.get("model"))
     env_use_stub = os.getenv("DSL_USE_STUB")
     if env_use_stub is not None:
@@ -104,6 +112,13 @@ def _resolve_settings(args: argparse.Namespace, cfg: Dict[str, Any]) -> Dict[str
 
     settings["use_stub"] = _str_to_bool(str(settings.get("use_stub")) if settings.get("use_stub") is not None else None, False)
     settings["show_intent"] = _str_to_bool(str(settings.get("show_intent")) if settings.get("show_intent") is not None else None, False)
+    env_use_real_llm = os.getenv("DSL_USE_REAL_LLM")
+    if env_use_real_llm is not None:
+        settings["use_real_llm"] = _str_to_bool(env_use_real_llm, False)
+    if settings.get("use_real_llm") is None:
+        settings["use_real_llm"] = False
+    # provider can be overridden via env var
+    settings["provider"] = os.getenv("DSL_PROVIDER", settings.get("provider"))
     # idle timeout: None or float seconds; <=0 disables
     try:
         if settings.get("idle_timeout") is not None:
@@ -116,6 +131,31 @@ def _resolve_settings(args: argparse.Namespace, cfg: Dict[str, Any]) -> Dict[str
 
 
 def _build_intent_service(settings: Dict[str, Any], scenario_name: str) -> IntentService:
+    # If explicitly forced, use a real LLM and fail early if config is incomplete
+    if settings.get("use_real_llm"):
+        api_base = settings.get("api_base") or ""
+        api_key = settings.get("api_key") or ""
+        model = settings.get("model") or ""
+        if not (api_base and api_key and model):
+            msg = (
+                "--use-real-llm specified but LLM configuration is incomplete. "
+                "Please set DSL_API_BASE, DSL_API_KEY, DSL_MODEL in environment or config.ini, or use --use-stub to fall back to stub service."
+            )
+            logging.error(msg)
+            # Fail fast with a clear CLI-level message
+            sys.exit(msg)
+        desc_all = settings.get("intent_descriptions") or {}
+        intent_descriptions = desc_all.get(scenario_name, {})
+        logging.info("Forced use of real LLM intent service model=%s api_base=%s", model, api_base)
+        provider = settings.get("provider")
+        if provider and provider.lower() == 'aliyun':
+            try:
+                from .aliyun_shim import AliyunShim
+                client = AliyunShim(api_base=api_base, api_key=api_key, api_secret=settings.get('api_secret'))
+                return LLMIntentService(api_base=api_base, api_key=api_key, model=model, intent_descriptions=intent_descriptions, client=client)
+            except Exception:
+                logging.exception("Failed to construct AliyunShim wrapper for forced real LLM; falling back to standard client")
+        return LLMIntentService(api_base=api_base, api_key=api_key, model=model, intent_descriptions=intent_descriptions)
     if settings["use_stub"]:
         logging.info("Using stub intent service (use_stub=True)")
         return StubIntentService()
@@ -128,6 +168,15 @@ def _build_intent_service(settings: Dict[str, Any], scenario_name: str) -> Inten
     logging.info("Using LLM intent service model=%s api_base=%s", model, api_base)
     desc_all = settings.get("intent_descriptions") or {}
     intent_descriptions = desc_all.get(scenario_name, {})
+    # if a provider is specified and has a shim wrapper, construct a client wrapper
+    provider = settings.get("provider")
+    if provider and provider.lower() == 'aliyun':
+        try:
+            from .aliyun_shim import AliyunShim
+            client = AliyunShim(api_base=api_base, api_key=api_key, api_secret=settings.get('api_secret'))
+            return LLMIntentService(api_base=api_base, api_key=api_key, model=model, intent_descriptions=intent_descriptions, client=client)
+        except Exception:
+            logging.exception("Failed to construct AliyunShim wrapper; falling back to OpenAI-compatible client")
     return LLMIntentService(
         api_base=api_base,
         api_key=api_key,
@@ -136,28 +185,93 @@ def _build_intent_service(settings: Dict[str, Any], scenario_name: str) -> Inten
     )
 
 
+def run_demo_scenario(scenario: str, args: argparse.Namespace) -> None:
+    """Run an interactive demo scenario using the current CLI args and settings.
+
+    The function behaves similarly to demo/run_demo.py but lives within logic.py
+    to reuse existing configuration helpers.
+    """
+    from pathlib import Path
+    # Determine potential script paths: demo/<scenario>.dsl or scenario/<scenario>.dsl or path
+    candidates = [Path("demo") / f"{scenario}.dsl", Path("scenario") / f"{scenario}.dsl", Path(scenario)]
+    script_path = None
+    for c in candidates:
+        if c.exists():
+            script_path = str(c)
+            break
+    if script_path is None:
+        raise FileNotFoundError(f"Scenario file not found: searched {candidates}")
+
+    cfg = _load_config(args.config) if args.config else {}
+    settings = _resolve_settings(args, cfg)
+    # apply CLI overrides explicitly provided
+    if getattr(args, "use_stub", None) is not None:
+        settings["use_stub"] = args.use_stub
+    if getattr(args, "use_real_llm", None) is not None:
+        settings["use_real_llm"] = args.use_real_llm
+    if getattr(args, "api_base", None):
+        settings["api_base"] = args.api_base
+    if getattr(args, "api_key", None):
+        settings["api_key"] = args.api_key
+    if getattr(args, "model", None):
+        settings["model"] = args.model
+
+    svc = _build_intent_service(settings, scenario_name=scenario)
+    scen = dsl_parser.parse_script(script_path)
+    bot = interpreter.Interpreter(scen, svc)
+    print(f"Running scenario='{scenario}'. use_stub={settings.get('use_stub')}, use_real_llm={settings.get('use_real_llm')}")
+    print("Type 'exit' to quit; empty input triggers default branch when idle timeout configured.")
+    while True:
+        try:
+            user_text = input("> ")
+        except EOFError:
+            break
+        if user_text.strip().lower() in {"exit", "quit"}:
+            break
+        try:
+            reply = bot.process_input(user_text)
+        except Exception as exc:
+            print("Error processing input:", exc)
+            break
+        print(reply)
+
+
+
 def run_logic() -> None:
     parser = argparse.ArgumentParser(description="DSL Agent CLI")
-    parser.add_argument("script", help="Path to DSL script file")
+    parser.add_argument("script", nargs='?', help="Path to DSL script file")
+    parser.add_argument("--demo", help="Run a demo scenario (searches demo/ and scenario/ for the DSL file)")
     parser.add_argument("--config", help="Optional config file (ini)")
     parser.add_argument("--use-stub", dest="use_stub", action="store_true", help="Force stub intent service")
     parser.add_argument("--no-stub", dest="use_stub", action="store_false", help="Disable stub (use LLM)")
     parser.add_argument("--show-intent", dest="show_intent", action="store_true", help="Show identified intent in logs")
+    parser.add_argument(
+        "--use-real-llm",
+        dest="use_real_llm",
+        action="store_true",
+        help="Force using a real LLM (fail if LLM config is missing)",
+    )
     parser.add_argument("--api-base", help="LLM API base URL")
     parser.add_argument("--api-key", help="LLM API key")
     parser.add_argument("--model", help="LLM model name")
+    parser.add_argument("--provider", help="LLM provider (openai/aliyun)")
     parser.add_argument("--log-file", dest="log_file", help="Write logs to file (console will show warnings only)")
     parser.add_argument(
         "--idle-timeout",
         type=float,
         help="Seconds to wait for user input before auto-triggering default (<=0 disables)",
     )
-    parser.set_defaults(use_stub=None, show_intent=None)
+    parser.set_defaults(use_stub=None, show_intent=None, use_real_llm=None)
     args = parser.parse_args()
 
     config_data = _load_config(args.config)
     settings = _resolve_settings(args, config_data)
 
+    # If demo option specified, prefer demo flow
+    if args.demo:
+        return run_demo_scenario(args.demo, args)
+    if not args.script:
+        parser.error("script path or --demo must be specified")
     dsl_scenario = dsl_parser.parse_script(args.script)
 
     # 默认日志目录：项目当前工作目录下 logs/<scenario>.log
